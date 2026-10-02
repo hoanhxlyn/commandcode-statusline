@@ -9,7 +9,7 @@ Styled statusline footer for [Command Code](https://commandcode.ai), matching an
 ## Install
 
 ```bash
-commandcode mods add ~/Projects/andrewix-statusline/statusline.ts
+commandcode mods add hoanhxlyn/commandcode-statusline
 ```
 
 Or add to your `~/.commandcode/settings.json`:
@@ -18,7 +18,7 @@ Or add to your `~/.commandcode/settings.json`:
 {
   "mods": {
     "sources": [
-      "~/Projects/andrewix-statusline/statusline.ts"
+      "hoanhxlyn/commandcode-statusline"
     ]
   }
 }
