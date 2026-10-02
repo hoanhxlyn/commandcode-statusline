@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { formatDuration, shortPath, toEpochMs } from '../utils'
+import { formatDuration, shortPath, toEpochMs } from '../src/utils'
 
 describe('formatDuration', () => {
   it('should return "now" for zero or negative', () => {

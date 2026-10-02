@@ -8,7 +8,7 @@ interface ConfigSchema {
   model?: string
 }
 
-const COMMANDCODE_DIR = `${Bun.env.HOME || ''}/.commandcode`
+const COMMANDCODE_DIR = `${process.env.HOME || ''}/.commandcode`
 
 const stateStore = new Conf<StateSchema>({
   cwd: COMMANDCODE_DIR,

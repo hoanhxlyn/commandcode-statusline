@@ -1,11 +1,11 @@
 import type { ModApi } from '@commandcode/harness'
 import pc from 'picocolors'
-import { filter, first, last, pipe, sortBy } from 'remeda'
+import { filter, first, isTruthy, join, last, pipe, reduce, sortBy } from 'remeda'
 import type { ApiClient } from './api'
 import { C } from './constants'
 import type { StateManager } from './state'
 import type { UsageWindow } from './types'
-import { formatDuration, shortPath } from './utils'
+import { formatDuration, shortPath, terminalWidth } from './utils'
 
 export class Renderer {
   constructor(
@@ -65,33 +65,48 @@ export class Renderer {
     return C.budget(`\uf241 ${percent}%${time ? ` (${time})` : ''}`)
   }
 
+  private visibleLen(s: string): number {
+    return s.replace(/\x1b\[[0-9;]*m/g, '').length
+  }
+
   render(): void {
     if (!this.state.enabled || !this.cmd.ui.capabilities.status) {
       this.cmd.ui.setStatus(null)
       return
     }
 
-    const parts: string[] = []
-
-    parts.push(C.path(shortPath()))
-
-    if (this.state.branch) {
-      parts.push(`${C.white('on')} ${C.branch(`\ue0a0 ${this.state.branch}`)}`)
-    }
-
-    if (this.state.modelId) {
-      parts.push(`${C.white('via')} ${C.model(this.state.modelId)}`)
-    }
-
+    const cols = terminalWidth()
     const budget = this.budgetText()
-    if (budget) {
-      parts.push(budget)
-    }
 
-    if (this.state.problems.size) {
-      parts.push(C.budget(`⚠ ${[...this.state.problems.keys()].join(',')}`))
-    }
+    const candidates = [
+      this.state.problems.size
+        ? C.budget(`⚠ ${pipe([...this.state.problems.keys()], join(','))}`)
+        : '',
+      budget,
+      C.path(shortPath()),
+      this.state.branch
+        ? `${C.white('on')} ${C.branch(`\ue0a0 ${this.state.branch}`)}`
+        : '',
+      this.state.modelId
+        ? `${C.white('via')} ${C.model(this.state.modelId)}`
+        : '',
+    ]
 
-    this.cmd.ui.setStatus(parts.join(' '))
+    this.cmd.ui.setStatus(
+      pipe(
+        candidates,
+        filter(isTruthy),
+        reduce(
+          (acc, part) => {
+            const len = this.visibleLen(part)
+            const add = acc.len > 0 ? 1 : 0
+            if (acc.len + add + len > cols) return acc
+            return { len: acc.len + add + len, parts: [...acc.parts, part] }
+          },
+          { len: 0, parts: [] as string[] },
+        ),
+        ({ parts }) => parts.join(' '),
+      ),
+    )
   }
 }

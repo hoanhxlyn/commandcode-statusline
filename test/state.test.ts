@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { StateManager } from '../state'
+import { StateManager } from '../src/state'
 
 describe('StateManager', () => {
   it('should have default enabled state', () => {

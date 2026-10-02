@@ -26,6 +26,10 @@ export function toEpochMs(value: unknown): number | null {
 
 export function shortPath(): string {
   const cwd = process.cwd()
-  const home = Bun.env.HOME || ''
+  const home = process.env.HOME || ''
   return cwd.startsWith(home) ? `~${cwd.slice(home.length)}` : cwd
+}
+
+export function terminalWidth(): number {
+  return process.stdout.columns ?? 80
 }

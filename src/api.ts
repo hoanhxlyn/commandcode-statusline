@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises'
 import type { ModApi } from '@commandcode/harness'
 import { createApiClient } from './config'
 import { AUTH_FILE } from './constants'
@@ -70,7 +71,7 @@ export class ApiClient {
     if (process.env.COMMAND_CODE_API_KEY)
       return process.env.COMMAND_CODE_API_KEY
     try {
-      const auth = JSON.parse(await Bun.file(AUTH_FILE).text())
+      const auth = JSON.parse(await readFile(AUTH_FILE, 'utf-8'))
       return typeof auth.apiKey === 'string' ? auth.apiKey : ''
     } catch (error) {
       this.state.fail('auth', error)

@@ -1,7 +1,7 @@
 import { describe, expect, it, mock } from 'bun:test'
 import type { ModApi } from '@commandcode/harness'
-import { ApiClient } from '../api'
-import { StateManager } from '../state'
+import { ApiClient } from '../src/api'
+import { StateManager } from '../src/state'
 
 function createMockApi() {
   return {
