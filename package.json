@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Styled statusline footer for Command Code, matching Oh My Posh theme",
   "type": "module",
-  "main": "statusline.ts",
+  "main": "index.ts",
   "private": true,
   "scripts": {
     "check": "tsc --noEmit"

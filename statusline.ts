@@ -143,13 +143,13 @@ export default function (cmd: ModApi): void {
         }
         problems.delete('auth');
 
-        const getJson = async (path: string) => {
+        const getJson = async (path: string): Promise<Record<string, any>> => {
             const response = await fetch(`https://api.commandcode.ai${path}`, {
                 headers: {Authorization: `Bearer ${apiKey}`},
                 signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
             });
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            return response.json();
+            return response.json() as Promise<Record<string, any>>;
         };
 
         let orgId = '';
