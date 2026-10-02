@@ -6,10 +6,19 @@
   "main": "index.ts",
   "private": true,
   "scripts": {
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "lint": "biome check .",
+    "format": "biome format . --write",
+    "fix": "biome check . --write"
   },
   "devDependencies": {
+    "@biomejs/biome": "2",
     "@types/bun": "latest",
     "typescript": "^7"
+  },
+  "dependencies": {
+    "axios": "^1.20.0",
+    "dayjs": "^1.11.23",
+    "picocolors": "^1.1.1"
   }
 }
