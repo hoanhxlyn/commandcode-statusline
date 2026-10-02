@@ -14,7 +14,7 @@ export const RENDER_INTERVAL_MS = MINUTE_MS
 export const REFRESH_INTERVAL_MS = 5 * MINUTE_MS
 export const FETCH_TIMEOUT_MS = 8_000
 
-const HOME = process.env.HOME || ''
+const HOME = Bun.env.HOME || ''
 export const STATE_FILE = `${HOME}/.commandcode/statusline.state.json`
 export const CONFIG_FILE = `${HOME}/.commandcode/config.json`
 export const AUTH_FILE = `${HOME}/.commandcode/auth.json`

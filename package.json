@@ -6,7 +6,9 @@
   "main": "index.ts",
   "private": true,
   "scripts": {
+    "build": "bun build index.ts --outdir dist --target bun",
     "check": "tsc --noEmit",
+    "test": "bun test",
     "lint": "biome check .",
     "format": "biome format . --write",
     "fix": "biome check . --write"
@@ -20,6 +22,7 @@
     "axios": "^1.20.0",
     "conf": "^15.1.0",
     "dayjs": "^1.11.23",
-    "picocolors": "^1.1.1"
+    "picocolors": "^1.1.1",
+    "remeda": "^2.50.0"
   }
 }

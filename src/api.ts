@@ -70,8 +70,7 @@ export class ApiClient {
     if (process.env.COMMAND_CODE_API_KEY)
       return process.env.COMMAND_CODE_API_KEY
     try {
-      const file = Bun.file(AUTH_FILE)
-      const auth = JSON.parse(await file.text())
+      const auth = JSON.parse(await Bun.file(AUTH_FILE).text())
       return typeof auth.apiKey === 'string' ? auth.apiKey : ''
     } catch (error) {
       this.state.fail('auth', error)

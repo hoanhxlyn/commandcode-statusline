@@ -26,6 +26,6 @@ export function toEpochMs(value: unknown): number | null {
 
 export function shortPath(): string {
   const cwd = process.cwd()
-  const home = process.env.HOME || ''
+  const home = Bun.env.HOME || ''
   return cwd.startsWith(home) ? `~${cwd.slice(home.length)}` : cwd
 }

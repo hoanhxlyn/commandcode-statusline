@@ -1,5 +1,6 @@
 import type { ModApi } from '@commandcode/harness'
 import pc from 'picocolors'
+import { filter, first, last, pipe, sortBy } from 'remeda'
 import type { ApiClient } from './api'
 import { C } from './constants'
 import type { StateManager } from './state'
@@ -21,18 +22,31 @@ export class Renderer {
     const windows = this.api.getWindows()
     const period = this.api.getPeriod()
     if (!windows.length) return null
-    const blocked = windows.filter((w) => w.exceeded)
-    if (blocked.length) {
-      const opensAt = (w: UsageWindow) =>
-        Math.min(w.resetAt ?? Infinity, period?.end ?? Infinity)
-      return blocked.reduce((latest, c) =>
-        opensAt(c) > opensAt(latest) ? c : latest,
+
+    const blocked = pipe(
+      windows,
+      filter((w) => w.exceeded),
+      first(),
+    )
+    if (blocked) {
+      return (
+        pipe(
+          windows,
+          filter((w) => w.exceeded),
+          sortBy((w) =>
+            Math.min(w.resetAt ?? Infinity, period?.end ?? Infinity),
+          ),
+          last(),
+        ) ?? null
       )
     }
-    return windows.reduce<UsageWindow | null>(
-      (best, c) =>
-        !best || this.moneyLeft(c) < this.moneyLeft(best) ? c : best,
-      null,
+
+    return (
+      pipe(
+        windows,
+        sortBy((w) => this.moneyLeft(w)),
+        first(),
+      ) ?? null
     )
   }
 
