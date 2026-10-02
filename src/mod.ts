@@ -14,8 +14,6 @@ export default function (cmd: ModApi): void {
   const api = new ApiClient(state, cmd, () => renderer.render())
   const renderer = new Renderer(state, api, cmd)
 
-  void state.loadState()
-
   cmd.on('model_request_start', (event: ModelRequestStartEvent) => {
     const requested = typeof event?.model === 'string' ? event.model : ''
     if (!requested || requested === state.modelId) return
@@ -37,8 +35,8 @@ export default function (cmd: ModApi): void {
   })
 
   cmd.hooks({
-    onSessionStart: async () => {
-      if (!state.modelId) state.modelId = await state.readConfigModel()
+    onSessionStart: () => {
+      if (!state.modelId) state.modelId = state.readConfigModel()
       renderer.render()
       void api.refreshUsage()
       void api.refreshBranch()
@@ -56,13 +54,11 @@ export default function (cmd: ModApi): void {
         .toLowerCase()
       if (command === 'off') {
         state.enabled = false
-        state.saveState()
         renderer.render()
         return { message: 'statusline off' }
       }
       if (command === 'on') {
         state.enabled = true
-        state.saveState()
         renderer.render()
         return { message: 'statusline on' }
       }

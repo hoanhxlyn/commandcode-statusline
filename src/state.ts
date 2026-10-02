@@ -1,10 +1,39 @@
-import { CONFIG_FILE, STATE_FILE } from './constants'
+import Conf from 'conf'
+
+interface StateSchema {
+  enabled: boolean
+}
+
+interface ConfigSchema {
+  model?: string
+}
+
+const COMMANDCODE_DIR = `${process.env.HOME || ''}/.commandcode`
+
+const stateStore = new Conf<StateSchema>({
+  cwd: COMMANDCODE_DIR,
+  configName: 'statusline.state',
+  defaults: { enabled: true },
+})
+
+const configStore = new Conf<ConfigSchema>({
+  cwd: COMMANDCODE_DIR,
+  configName: 'config',
+})
 
 export class StateManager {
-  enabled = true
   modelId = ''
   branch = ''
   readonly problems = new Map<string, string>()
+
+  get enabled(): boolean {
+    return stateStore.get('enabled')
+  }
+
+  set enabled(value: boolean) {
+    stateStore.set('enabled', value)
+    this.problems.delete('state')
+  }
 
   fail(where: string, reason: unknown): void {
     this.problems.set(
@@ -13,30 +42,10 @@ export class StateManager {
     )
   }
 
-  saveState(): void {
+  readConfigModel(): string {
     try {
-      Bun.write(STATE_FILE, JSON.stringify({ enabled: this.enabled }, null, 2))
-      this.problems.delete('state')
-    } catch (error) {
-      this.fail('state', error)
-    }
-  }
-
-  async loadState(): Promise<void> {
-    try {
-      const file = Bun.file(STATE_FILE)
-      const saved = JSON.parse(await file.text())
-      if (typeof saved.enabled === 'boolean') this.enabled = saved.enabled
-    } catch (error) {
-      if (!String(error).includes('ENOENT')) this.fail('state', error)
-    }
-  }
-
-  async readConfigModel(): Promise<string> {
-    try {
-      const file = Bun.file(CONFIG_FILE)
-      const config = JSON.parse(await file.text())
-      return typeof config.model === 'string' ? config.model : ''
+      const model = configStore.get('model')
+      return typeof model === 'string' ? model : ''
     } catch (error) {
       this.fail('config', error)
       return ''
