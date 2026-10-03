@@ -29,7 +29,3 @@ export function shortPath(): string {
   const home = process.env.HOME || ''
   return cwd.startsWith(home) ? `~${cwd.slice(home.length)}` : cwd
 }
-
-export function terminalWidth(): number {
-  return process.stdout.columns ?? 80
-}
