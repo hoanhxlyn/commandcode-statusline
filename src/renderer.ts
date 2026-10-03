@@ -77,9 +77,6 @@ export class Renderer {
       parts.push(C.budget(`⚠ ${[...this.state.problems.keys()].join(',')}`))
     }
 
-    const budget = this.budgetText()
-    if (budget) parts.push(budget)
-
     parts.push(C.path(shortPath()))
 
     if (this.state.branch) {
@@ -89,6 +86,9 @@ export class Renderer {
     if (this.state.modelId) {
       parts.push(`${C.white('via')} ${C.model(this.state.modelId)}`)
     }
+
+    const budget = this.budgetText()
+    if (budget) parts.push(budget)
 
     this.cmd.ui.setStatus(parts.join(' '))
   }
